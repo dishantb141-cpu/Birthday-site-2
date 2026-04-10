@@ -1,0 +1,210 @@
+<!DOCTYPE html><html>
+<head>
+<title>Birthday 💖</title><style>
+/* Stars background */
+body {
+  margin: 0;
+  background: black;
+  color: white;
+  text-align: center;
+  font-family: cursive;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: url("https://www.transparenttextures.com/patterns/stardust.png");
+  opacity: 0.3;
+  animation: moveStars 50s linear infinite;
+  z-index: -1;
+}
+
+@keyframes moveStars {
+  from { background-position: 0 0; }
+  to { background-position: 1000px 1000px; }
+}
+
+.layer {
+  display: none;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.active {
+  display: flex;
+}
+
+img {
+  width: 220px;
+  border-radius: 15px;
+  box-shadow: 0 0 50px gold;
+  animation: glowPulse 2s infinite alternate;
+}
+
+@keyframes glowPulse {
+  from {
+    box-shadow: 0 0 20px gold;
+  }
+  to {
+    box-shadow: 0 0 40px orange;
+  }
+}
+
+#poem {
+  font-size: 28px;
+  line-height: 1.8;
+  padding: 25px;
+  text-shadow: 0 0 22px white, 0 0 30px gold;
+  animation : poemEntry 1.5s ease;
+}
+
+@keyframes poemEntry {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#stars {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+</style></head><body>
+<canvas id="stars"></canvas>
+<audio id="music" loop preload="auto">
+  <source src="Vipul birthday.mp3" type="audio/mpeg">
+</audio><!-- Start --><div class="layer active" id="layer0">
+  <h1>Tap to Begin, Vipul 💫</h1>
+  <button onclick="start()">Start</button>
+</div><!-- Birthday --><div class="layer" id="layer1">
+  <h1>Happy Birthday 💖</h1>
+</div><!-- Poem --><div class="layer" id="layer2">
+  <p id="poem"></p>
+</div><!-- Krishna --><div class="layer" id="layer3">
+  <img src="krishna friendship.jpg">
+  <h2>Radhe Radhe 🕉️</h2>
+</div><!-- Blessing --><div class="layer" id="layer4">
+  <h1>God Bless You 🙏</h1>
+</div><script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script><script>
+const canvas = document.getElementById("stars");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let stars = [];
+
+for (let i = 0; i < 100; i++) {
+  stars.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    size: Math.random() * 2,
+    speed: Math.random() * 1
+  });
+}
+
+function drawStars() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = "white";
+
+  stars.forEach(star => {
+    ctx.beginPath();
+    ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+    ctx.fill();
+
+    star.y += star.speed;
+
+    if (star.y > canvas.height) {
+      star.y = 0;
+      star.x = Math.random() * canvas.width;
+    }
+  });
+
+  requestAnimationFrame(drawStars);
+}
+
+drawStars();
+
+function launchConfetti() {
+  confetti({
+    particleCount: 150,
+    spread: 70,
+    origin: { y: 0.6 }
+  });
+}
+
+let current = 0;
+
+function start() {
+  let music = document.getElementById("music");
+  music.volume = 0;
+  music.play();
+
+  let fade = setInterval(function() {
+    if (music.volume < 1) {
+      music.volume += 0.1;
+    } else {
+      clearInterval(fade);
+    }
+  }, 300);
+
+  next();
+}
+
+function next() {
+  document.getElementById("layer" + current).classList.remove("active");
+  current++;
+
+  if(current > 4) return;
+
+  if (current == 4) {
+    launchConfetti();
+  }
+
+  document.getElementById("layer" + current).classList.add("active");
+
+  if(current == 2) {
+    typePoem();
+    setTimeout(next, text.length * 60 + 2000);
+  } else {
+    setTimeout(next, 3000);
+  }
+}
+
+// Updated Poem
+let text = "तेरी दोस्ती में सच्चाई का उजाला दिखता है,<br>हर मुश्किल में तेरा साथ हौसला बनकर टिकता है।<br>दिल इतना बड़ा कि सबको अपना बना लेता है,<br>तेरी दरियादिली से हर रिश्ता महक जाता है।<br>मेहनत से तू मंज़िल को अपना बना लेता है,<br>आत्मविश्वास तेरा हर डर को हरा देता है।<br>मेरे लिए तू सिर्फ दोस्त नहीं, एक ताकत है,<br>सच कहूँ, तेरे जैसा इस दुनिया में कोई नहीं — तू ही सबसे अलग है।";
+
+function typePoem() {
+  let i = 0;
+  let speed = 50;
+  let target = document.getElementById("poem");
+
+  target.innerHTML = "";
+
+  function typing() {
+    if (i <= text.length) {
+      target.innerHTML = text.substring(0, i);
+      i++;
+      setTimeout(typing, speed);
+    }
+  }
+
+  typing();
+}
+
+</script></body>
+</html>
